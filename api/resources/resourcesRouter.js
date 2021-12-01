@@ -1,12 +1,11 @@
 const express = require('express');
 const router = express.Router();
 const Resources = require('./resourcesModel');
-const authRequired = require('../middleware/authRequired');
 const { adminRequired } = require('../middleware/permissionsRequired');
 
 //get all resources
 
-router.get('/', authRequired, (req, res) => {
+router.get('/', (req, res) => {
   Resources.findAll()
     .then((resources) => {
       res.status(200).json(resources);
@@ -18,7 +17,7 @@ router.get('/', authRequired, (req, res) => {
 
 // get a resource by its id
 
-router.get('/:resource_id', authRequired, (req, res) => {
+router.get('/:resource_id', (req, res) => {
   const id = req.params.resource_id;
   Resources.findByResourceId(id)
     .then((resource) => {
@@ -37,7 +36,7 @@ router.get('/:resource_id', authRequired, (req, res) => {
 
 router.post(
   '/',
-  authRequired,
+
   validNewResource,
   adminRequired,
   (req, res, next) => {
@@ -54,7 +53,7 @@ router.post(
 
 router.put(
   '/:resource_id',
-  authRequired,
+
   validNewResource,
   adminRequired,
   (req, res, next) => {
@@ -79,7 +78,7 @@ router.put(
 
 router.delete(
   '/:resource_id',
-  authRequired,
+
   adminRequired,
   (req, res, next) => {
     const id = req.params.resource_id;

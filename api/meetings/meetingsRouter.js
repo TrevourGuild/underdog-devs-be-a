@@ -3,7 +3,6 @@ const Meeting = require('../meetings/meetingsModel');
 const Profiles = require('../profile/profileModel');
 const router = express.Router();
 const jwt = require('jwt-decode');
-const authRequired = require('../middleware/authRequired');
 const {
   mentorRequired,
   adminRequired,
@@ -11,7 +10,7 @@ const {
 
 // get all meetings
 
-router.get('/', authRequired, adminRequired, (req, res) => {
+router.get('/', adminRequired, (req, res) => {
   Meeting.findAll()
     .then((meetings) => {
       res.status(200).json(meetings);
@@ -25,7 +24,6 @@ router.get('/', authRequired, adminRequired, (req, res) => {
 
 router.get(
   '/profile/:profile_id',
-  authRequired,
   validProfileID,
   adminRequired,
   (req, res) => {
@@ -46,7 +44,7 @@ router.get(
 
 // get all the meetings the current user has
 
-router.get('/my-meetings', authRequired, async (req, res) => {
+router.get('/my-meetings', async (req, res) => {
   const token = req.headers.authorization;
   const user = jwt(token);
   const id = user.sub;
@@ -63,7 +61,6 @@ router.get('/my-meetings', authRequired, async (req, res) => {
 
 router.post(
   '/',
-  authRequired,
   validNewMeeting,
   validHostID,
   validAttendeeID,
@@ -82,7 +79,6 @@ router.post(
 
 router.put(
   '/:meeting_id',
-  authRequired,
   validMeetingID,
   validNewMeeting,
   mentorRequired,
@@ -108,7 +104,6 @@ router.put(
 
 router.delete(
   '/:meeting_id',
-  authRequired,
   validMeetingID,
   mentorRequired,
   (req, res, next) => {
@@ -127,7 +122,7 @@ router.delete(
 
 // get a meeting by meeting_id
 
-router.get('/:meeting_id', authRequired, validMeetingID, (req, res) => {
+router.get('/:meeting_id', validMeetingID, (req, res) => {
   const id = req.params.meeting_id;
   Meeting.findByMeetingId(id)
     .then((meeting) => {

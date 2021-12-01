@@ -4,11 +4,10 @@ const Profiles = require('../profile/profileModel');
 const router = express.Router();
 const jwt = require('jwt-decode');
 const { adminRequired } = require('../middleware/permissionsRequired');
-const authRequired = require('../middleware/authRequired');
 
 //get all assignments
 
-router.get('/', authRequired, adminRequired, (req, res) => {
+router.get('/', adminRequired, (req, res) => {
   Assignment.findAll()
     .then((assignments) => {
       res.status(200).json(assignments);
@@ -23,7 +22,7 @@ router.get('/', authRequired, adminRequired, (req, res) => {
 
 router.get(
   '/mentor/:id',
-  authRequired,
+
   validProfileID,
   adminRequired,
   (req, res) => {
@@ -48,7 +47,7 @@ router.get(
 
 router.get(
   '/mentee/:id',
-  authRequired,
+
   validProfileID,
   adminRequired,
   (req, res) => {
@@ -71,7 +70,7 @@ router.get(
 
 //get current users mentors
 
-router.get('/mymentors', authRequired, (req, res) => {
+router.get('/mymentors', (req, res) => {
   const token = req.headers.authorization;
   const User = jwt(token);
   Assignment.findByMenteeId(User.sub)
@@ -89,7 +88,7 @@ router.get('/mymentors', authRequired, (req, res) => {
 
 //get current users mentees
 
-router.get('/mymentees', authRequired, (req, res) => {
+router.get('/mymentees', (req, res) => {
   const token = req.headers.authorization;
   const User = jwt(token);
   Assignment.findByMentorId(User.sub)
@@ -109,7 +108,7 @@ router.get('/mymentees', authRequired, (req, res) => {
 
 router.post(
   '/',
-  authRequired,
+
   validNewAssign,
   adminRequired,
   (req, res, next) => {
@@ -126,7 +125,7 @@ router.post(
 
 router.put(
   '/:id',
-  authRequired,
+
   validAssignID,
   adminRequired,
   (req, res, next) => {
@@ -151,7 +150,7 @@ router.put(
 
 router.delete(
   '/:id',
-  authRequired,
+
   validAssignID,
   adminRequired,
   (req, res, next) => {
@@ -170,7 +169,7 @@ router.delete(
 
 // get assignment by assignment id
 
-router.get('/:id', authRequired, validAssignID, adminRequired, (req, res) => {
+router.get('/:id', validAssignID, adminRequired, (req, res) => {
   const id = req.params.id;
   Assignment.findById(id)
     .then((assigns) => {
